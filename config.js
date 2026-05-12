@@ -41,7 +41,12 @@ const CONFIG = {
     mapLinks: {
       kakao: "https://place.map.kakao.com/1992754829",
       naver: "https://map.naver.com/p/entry/place/1106412731?c=15.00,0,0,0,dh&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202605120940&locale=ko&svcName=map_pcv5"
-    }
+    },
+  transport: {      
+    subway: "2호선 강남역 1번 출구에서 도보 5분",      
+    bus: "강남역 정류장 하차\n간선 140, 145, 146번\n지선 3412, 4412번",
+    car: "강남구 논현로 549\n주차는 건물 지하 2층~4층 이용 가능\n(2시간 무료)"
+}
   },
 
   // ── 우리의 이야기 ──
