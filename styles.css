@@ -1149,3 +1149,92 @@ a {
         transform: none !important;
     }
 }
+
+
+/* ── Wedding Calendar ── */
+.wedding-calendar {
+  margin: 20px auto 10px;
+  max-width: 320px;
+  font-family: 'Noto Serif KR', serif;
+}
+.cal-header {
+  text-align: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: #8b7355;
+  margin-bottom: 10px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.cal-day-name {
+  font-size: 0.72rem;
+  color: #aaa;
+  padding: 4px 0;
+}
+.cal-cell {
+  font-size: 0.8rem;
+  padding: 6px 2px;
+  color: #555;
+  position: relative;
+}
+.cal-cell.empty { background: none; }
+.cal-cell.wedding-day {
+  background: #8b7355;
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 500;
+}
+.cal-heart {
+  display: block;
+  font-size: 0.55rem;
+  margin-top: 1px;
+  color: #fff;
+}
+
+/* ── Transport Tabs ── */
+.transport-section {
+  margin: 24px 0 16px;
+}
+.transport-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0d8cc;
+  margin-bottom: 12px;
+}
+.transport-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  color: #aaa;
+  cursor: pointer;
+  font-family: 'Noto Serif KR', serif;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.transport-tab.active {
+  color: #8b7355;
+  border-bottom: 2px solid #8b7355;
+}
+.transport-panel {
+  display: none;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.8;
+  padding: 4px 0;
+  text-align: center;
+}
+.transport-panel.active {
+  display: block;
+}
+
+
+
+
+
+
+
