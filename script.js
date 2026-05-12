@@ -712,6 +712,8 @@ function initTransport() {
     // Init sections that don't depend on image detection
     initPhotoViewer();
     initLocation();
+    initWeddingCalendar();
+    initTransport();
     initAccounts();
     initFooter();
     initScrollAnimations();
