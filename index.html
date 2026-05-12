@@ -128,6 +128,25 @@
           <a href="#" class="map-btn naver-btn" id="naverMapBtn" target="_blank" rel="noopener">네이버지도</a>
         </div>
       </div>
+      <!-- 교통 정보 탭 -->
+<div class="transport-section">
+  <div class="transport-tabs">
+    <button class="transport-tab active" data-tab="subway">지하철</button>
+    <button class="transport-tab" data-tab="bus">버스</button>
+    <button class="transport-tab" data-tab="car">자가용</button>
+  </div>
+  <div class="transport-content">
+    <div class="transport-panel active" id="tab-subway">
+      <p id="transport-subway"></p>
+    </div>
+    <div class="transport-panel" id="tab-bus">
+      <p id="transport-bus"></p>
+    </div>
+    <div class="transport-panel" id="tab-car">
+      <p id="transport-car"></p>
+    </div>
+  </div>
+</div>
       <div class="location-map-container">
         <img src="" alt="약도" class="location-map" id="locationMapImg">
       </div>
