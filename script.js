@@ -563,6 +563,68 @@
     $('#footerText').textContent = `${CONFIG.groom.name} & ${CONFIG.bride.name} — ${year}.${month}.${day}`;
   }
 
+/* ═══════════════════════════════════════════
+   Wedding Calendar
+   ═══════════════════════════════════════════ */
+
+function initWeddingCalendar() {
+  const container = $('#weddingCalendar');
+  if (!container) return;
+
+  const dt = getWeddingDateTime();
+  const year = dt.getFullYear();
+  const month = dt.getMonth();
+  const weddingDay = dt.getDate();
+
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const dayNames = ['일','월','화','수','목','금','토'];
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  let html = `<div class="cal-header">${year}년 ${monthNames[month]}</div>`;
+  html += '<div class="cal-grid">';
+  dayNames.forEach(d => {
+    html += `<div class="cal-day-name">${d}</div>`;
+  });
+
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="cal-cell empty"></div>';
+  }
+  for (let d = 1; d <= lastDate; d++) {
+    const isWedding = d === weddingDay;
+    html += `<div class="cal-cell${isWedding ? ' wedding-day' : ''}">${d}${isWedding ? '<span class="cal-heart">♥</span>' : ''}</div>`;
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════
+   Transport Tabs
+   ═══════════════════════════════════════════ */
+
+function initTransport() {
+  const t = CONFIG.wedding.transport;
+  if (!t) return;
+
+  if ($('#transport-subway')) $('#transport-subway').innerHTML = t.subway.replace(/\n/g, '<br>');
+  if ($('#transport-bus')) $('#transport-bus').innerHTML = t.bus.replace(/\n/g, '<br>');
+  if ($('#transport-car')) $('#transport-car').innerHTML = t.car.replace(/\n/g, '<br>');
+
+  $$('.transport-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      $$('.transport-tab').forEach(t => t.classList.remove('active'));
+      $$('.transport-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      $(`#tab-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+}
+
+
+
+  
   /* ═══════════════════════════════════════════
      Loading Placeholders
      ═══════════════════════════════════════════ */
