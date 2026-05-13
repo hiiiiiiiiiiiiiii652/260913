@@ -744,7 +744,10 @@ function initTransport() {
     // Auto-detect story and gallery images in parallel
     const [storyImages, galleryImages] = await Promise.all([
       loadImagesFromFolder('story'),
-      loadImagesFromFolder('gallery')
+      loadImagesFromFolder('gallery'),
+      loadImagesFromFolder('school'),
+      loadImagesFromFolder('jeju')
+
     ]);
 
     // Render sections with discovered images
