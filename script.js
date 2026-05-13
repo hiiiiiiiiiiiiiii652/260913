@@ -742,11 +742,13 @@ function initTransport() {
     initPetals();
 
     // Auto-detect story and gallery images in parallel
-    const [storyImages, galleryImages] = await Promise.all([
-      loadImagesFromFolder('story'),
-      loadImagesFromFolder('gallery'),
-      loadImagesFromFolder('school'),
-      loadImagesFromFolder('jeju')
+const [storyImages, galleryImages, schoolImages, jejuImages] = await Promise.all([
+  loadImagesFromFolder('story'),
+  loadImagesFromFolder('gallery'),
+  loadImagesFromFolder('school'),
+  loadImagesFromFolder('jeju')
+]);
+
 
     ]);
 
