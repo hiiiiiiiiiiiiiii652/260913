@@ -425,18 +425,36 @@
 
   function navigateViewer(direction) {
     const img = $('#viewerImage');
-    img.classList.add('fade-out');
+    const slideOut = direction === 'next' ? '-100%' : '100%';
+    const slideIn = direction === 'next' ? '100%' : '-100%';
+
+    img.style.transition = 'transform 0.28s ease, opacity 0.28s ease';
+    img.style.transform = `translateX(${slideOut})`;
+    img.style.opacity = '0';
 
     setTimeout(() => {
-      if (direction === 'prev') {
-        viewerIndex = (viewerIndex - 1 + viewerImages.length) % viewerImages.length;
-      } else {
-        viewerIndex = (viewerIndex + 1) % viewerImages.length;
-      }
-      showViewerImage();
-      img.classList.remove('fade-out');
-    }, 200);
-  }
+    if (direction === 'prev') {
+      viewerIndex = (viewerIndex - 1 + viewerImages.length) % viewerImages.length;
+    } else {
+      viewerIndex = (viewerIndex + 1) % viewerImages.length;
+    }
+
+    img.style.transition = 'none';
+    img.style.transform = `translateX(${slideIn})`;
+    img.style.opacity = '0';
+
+    showViewerImage();
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        img.style.transition = 'transform 0.28s ease, opacity 0.28s ease';
+        img.style.transform = 'translateX(0)';
+        img.style.opacity = '1';
+      });
+    });
+  }, 280);
+}
+
 
   function initPhotoViewer() {
     const viewer = $('#photoViewer');
