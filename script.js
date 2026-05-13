@@ -12,7 +12,7 @@ Utility Helpers
 ═══════════════════════════════════════════ */
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => […ctx.querySelectorAll(sel)];
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 function formatDateShort(dateStr, timeStr) {
 const d = new Date(`${dateStr}T${timeStr}:00`);
