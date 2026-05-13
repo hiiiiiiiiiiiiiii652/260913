@@ -584,6 +584,64 @@ function navigateViewer(direction) {
   }
 
 /* ═══════════════════════════════════════════
+   Slider
+   ═══════════════════════════════════════════ */
+function initSlider(trackId, prevId, nextId, images) {
+  const track = $(`#${trackId}`);
+  if (!track || images.length === 0) {
+    const section = track?.closest('.section-slider');
+    if (section) section.style.display = 'none';
+    return;
+  }
+
+  let allImages = images; // 뷰어용 전체 목록
+
+  images.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'slider-item';
+    item.innerHTML = `<img src="${src}" alt="사진 ${i + 1}" loading="lazy">`;
+    item.addEventListener('click', () => openViewer(allImages, i));
+    track.appendChild(item);
+  });
+
+  const itemWidth = () => {
+    const first = track.querySelector('.slider-item');
+    return first ? first.offsetWidth + 12 : 0;
+  };
+
+  let current = 0;
+  const max = () => images.length - 1;
+
+  const move = () => {
+    track.style.transform = `translateX(${-current * itemWidth()}px)`;
+  };
+
+  $(`#${prevId}`).addEventListener('click', () => {
+    if (current > 0) { current--; move(); }
+  });
+
+  $(`#${nextId}`).addEventListener('click', () => {
+    if (current < max()) { current++; move(); }
+  });
+
+  // 터치 스와이프
+  let startX = 0;
+  track.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  track.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0 && current < max()) current++;
+      else if (diff < 0 && current > 0) current--;
+      move();
+    }
+  });
+}
+
+  
+/* ═══════════════════════════════════════════
    Wedding Calendar
    ═══════════════════════════════════════════ */
 
