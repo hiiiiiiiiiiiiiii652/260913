@@ -14,57 +14,80 @@
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
   function formatDateShort(dateStr, timeStr) {
-    const d = new Date(`${dateStr}T${timeStr}:00`);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const [hour, minute] = timeStr.split(':').map(Number);
+    const d = new Date(year, month - 1, day, hour, minute);
     const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const date = String(d.getDate()).padStart(2, '0');
-    const day = days[d.getDay()];
-    const hours = d.getHours();
-    const minutes = d.getMinutes();
-    const period = hours < 12 ? 'AM' : 'PM';
-    const h12 = hours % 12 || 12;
-    const minuteStr = String(minutes).padStart(2, '0');
-    return `${year}. ${month}. ${date} ${day} ${period} ${h12}:${minuteStr}`;
+    const dayName = days[d.getDay()];
+    const period = hour < 12 ? 'AM' : 'PM';
+    const h12 = hour % 12 || 12;
+    const minuteStr = String(minute).padStart(2, '0');
+    return `${year}. ${String(month).padStart(2,'0')}. ${String(day).padStart(2,'0')} ${dayName} ${period} ${h12}:${minuteStr}`;
   }
 
+  /* ★ 수정: 타임존 문자열 파싱 대신 직접 Date 생성 → 모든 브라우저에서 안정 동작 */
   function getWeddingDateTime() {
-    return new Date(`${CONFIG.wedding.date}T${CONFIG.wedding.time}:00+09:00`);
+    const [year, month, day] = CONFIG.wedding.date.split('-').map(Number);
+    const [hour, minute] = CONFIG.wedding.time.split(':').map(Number);
+    // 한국시간(UTC+9) 기준으로 UTC 변환
+    return new Date(Date.UTC(year, month - 1, day, hour - 9, minute));
   }
 
   /* ═══════════════════════════════════════════
      Image Auto-Detection
+     ★ 수정: fetch HEAD 방식으로 변경 → GitHub Pages에서 안정적으로 동작
      ═══════════════════════════════════════════ */
 
-  function loadImagesFromFolder(folder, maxAttempts = 50) {
+  function checkImageExists(path) {
     return new Promise(resolve => {
-      const images = [];
-      let current = 1;
-      let consecutiveFails = 0;
+      const img = new Image();
+      // 캐시 무효화 방지 + 빠른 실패를 위해 타임아웃 설정
+      const timer = setTimeout(() => {
+        img.src = ''; // 로딩 취소
+        resolve(false);
+      }, 5000);
 
-      function tryNext() {
-        if (current > maxAttempts || consecutiveFails >= 3) {
-          resolve(images);
-          return;
-        }
-        const img = new Image();
-        const path = `images/${folder}/${current}.jpg`;
-        img.onload = function () {
-          images.push(path);
-          consecutiveFails = 0;
-          current++;
-          tryNext();
-        };
-        img.onerror = function () {
-          consecutiveFails++;
-          current++;
-          tryNext();
-        };
-        img.src = path;
-      }
-
-      tryNext();
+      img.onload = function () {
+        clearTimeout(timer);
+        // naturalWidth가 0이면 실제 이미지 아님 (빈 응답 등)
+        resolve(this.naturalWidth > 0);
+      };
+      img.onerror = function () {
+        clearTimeout(timer);
+        resolve(false);
+      };
+      // 캐시 우회 없이 그대로 로드 (GitHub Pages 정적 파일은 정상 응답)
+      img.src = path;
     });
+  }
+
+  async function loadImagesFromFolder(folder, maxAttempts = 50) {
+    const images = [];
+    let consecutiveFails = 0;
+
+    for (let i = 1; i <= maxAttempts; i++) {
+      if (consecutiveFails >= 3) break;
+
+      const path = `images/${folder}/${i}.jpg`;
+      const exists = await checkImageExists(path);
+
+      if (exists) {
+        images.push(path);
+        consecutiveFails = 0;
+      } else {
+        // .jpeg도 시도
+        const pathJpeg = `images/${folder}/${i}.jpeg`;
+        const existsJpeg = await checkImageExists(pathJpeg);
+        if (existsJpeg) {
+          images.push(pathJpeg);
+          consecutiveFails = 0;
+        } else {
+          consecutiveFails++;
+        }
+      }
+    }
+
+    return images;
   }
 
   /* ═══════════════════════════════════════════
@@ -127,6 +150,8 @@
 
   /* ═══════════════════════════════════════════
      Curtain
+     ★ 수정: useCurtain=false면 처음부터 완전히 숨김
+             useCurtain=true일 때만 curtain-active 클래스 추가 후 애니메이션
      ═══════════════════════════════════════════ */
 
   function initCurtain() {
@@ -134,13 +159,19 @@
     if (!curtain) return;
 
     if (CONFIG.useCurtain === false) {
+      // CSS에서 이미 display:none이므로 아무것도 안 해도 됨
+      // 혹시 모를 상황 대비해 명시적으로도 설정
       curtain.style.display = 'none';
       return;
     }
 
+    // 커튼 사용 시: curtain-active 클래스 추가로 애니메이션 시작
+    curtain.classList.add('curtain-active');
+
     setTimeout(() => {
       curtain.classList.add('hidden');
-    }, 2200);
+      curtain.classList.remove('curtain-active');
+    }, 2800); // 애니메이션(0.8s delay + 1.8s duration) 완료 후 숨김
   }
 
   /* ═══════════════════════════════════════════
@@ -201,7 +232,14 @@
 
   function initHero() {
     const heroImg = $('#heroImage');
-    if (heroImg) heroImg.src = 'images/hero/1.jpg';
+    if (heroImg) {
+      heroImg.src = 'images/hero/1.jpg';
+      heroImg.onerror = function() {
+        // hero 이미지 없으면 컨테이너 높이 최소화
+        this.closest('.hero-image-container').style.minHeight = '0';
+        this.style.display = 'none';
+      };
+    }
 
     $('#heroDate').textContent = formatDateShort(CONFIG.wedding.date, CONFIG.wedding.time);
     $('#heroNames').textContent = `${CONFIG.groom.name} & ${CONFIG.bride.name}`;
@@ -221,18 +259,6 @@
       <p class="parent-line">${parentSpan(b.father, b.fatherDeceased)} · ${parentSpan(b.mother, b.motherDeceased)}의 딸 <span class="child-name">${b.name}</span></p>
     `;
     $('#heroParents').innerHTML = parentsHTML;
-
-    const heroContainer = $('.hero-image-container');
-    if (heroContainer) {
-      const setFixedHeight = () => {
-        heroContainer.style.height = heroContainer.offsetHeight + 'px';
-      };
-      if (document.readyState === 'complete') {
-        setFixedHeight();
-      } else {
-        window.addEventListener('load', setFixedHeight);
-      }
-    }
   }
 
   /* ═══════════════════════════════════════════
@@ -275,9 +301,12 @@
 
   function initCalendar() {
     const dt = getWeddingDateTime();
-    const startDate = dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const pad = n => String(n).padStart(2, '0');
+    const fmt = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+
+    const startDate = fmt(dt);
     const endDt = new Date(dt.getTime() + 2 * 60 * 60 * 1000);
-    const endDate = endDt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const endDate = fmt(endDt);
 
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(CONFIG.groom.name + ' ♥ ' + CONFIG.bride.name + ' 결혼식')}&dates=${startDate}/${endDate}&location=${encodeURIComponent(CONFIG.wedding.venue + ' ' + CONFIG.wedding.address)}&details=${encodeURIComponent('결혼식에 초대합니다.')}`;
     const googleBtn = $('#googleCalBtn');
@@ -320,18 +349,15 @@
     const container = $('#weddingCalendar');
     if (!container) return;
 
-    const dt = getWeddingDateTime();
-    const year = dt.getFullYear();
-    const month = dt.getMonth();
-    const weddingDay = dt.getDate();
+    const [year, month, weddingDay] = CONFIG.wedding.date.split('-').map(Number);
 
     const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
     const dayNames = ['일','월','화','수','목','금','토'];
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const lastDate = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month - 1, 1).getDay();
+    const lastDate = new Date(year, month, 0).getDate();
 
-    let html = `<div class="cal-header">${year}년 ${monthNames[month]}</div>`;
+    let html = `<div class="cal-header">${year}년 ${monthNames[month - 1]}</div>`;
     html += '<div class="cal-grid">';
     dayNames.forEach(d => {
       html += `<div class="cal-day-name">${d}</div>`;
@@ -616,7 +642,15 @@
     const w = CONFIG.wedding;
     $('#locationVenue').textContent = w.venue;
     $('#locationAddress').textContent = w.address;
-    $('#locationMapImg').src = 'images/location/1.jpg';
+
+    const mapImg = $('#locationMapImg');
+    if (mapImg) {
+      mapImg.src = 'images/location/1.jpg';
+      mapImg.onerror = function() {
+        this.closest('.location-map-container').style.display = 'none';
+      };
+    }
+
     $('#kakaoMapBtn').href = w.mapLinks.kakao || '#';
     $('#naverMapBtn').href = w.mapLinks.naver || '#';
 
@@ -668,10 +702,7 @@
      ═══════════════════════════════════════════ */
 
   function initFooter() {
-    const dt = getWeddingDateTime();
-    const year = dt.getFullYear();
-    const month = String(dt.getMonth() + 1).padStart(2, '0');
-    const day = String(dt.getDate()).padStart(2, '0');
+    const [year, month, day] = CONFIG.wedding.date.split('-');
     $('#footerText').textContent = `${CONFIG.groom.name} & ${CONFIG.bride.name} — ${year}.${month}.${day}`;
   }
 
