@@ -807,9 +807,6 @@ const [storyImages, galleryImages, schoolImages, jejuImages] = await Promise.all
   loadImagesFromFolder('jeju')
 ]);
 
-
-    ]);
-
     // Render sections with discovered images
     initStory(storyImages);
     initGallery(galleryImages);
