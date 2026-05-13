@@ -755,6 +755,9 @@ const [storyImages, galleryImages, schoolImages, jejuImages] = await Promise.all
     // Render sections with discovered images
     initStory(storyImages);
     initGallery(galleryImages);
+    initSlider('schoolTrack', 'schoolPrev', 'schoolNext', schoolImages);
+initSlider('jejuTrack', 'jejuPrev', 'jejuNext', jejuImages);
+
   }
 
   if (document.readyState === 'loading') {
