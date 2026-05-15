@@ -29,6 +29,7 @@ body.no-scroll {
     overflow: hidden;
     position: fixed;
     width: 100%;
+    /* ★ JS에서 style.top = -scrollY 로 설정해 페이지 점프 방지 */
 }
 
 img {
