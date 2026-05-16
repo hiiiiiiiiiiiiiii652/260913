@@ -1,1319 +1,500 @@
 /* ═══════════════════════════════════════════
-   Original Warm Wedding Invitation
-   Korean Mobile 청첩장 - Styles
+   Wedding Invitation — styles.css
    ═══════════════════════════════════════════ */
 
-/* ─── Reset & Base ─── */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ─── Reset ─── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-    font-family: 'Noto Serif KR', serif;
-    background-color: #faf9f7;
-    color: #3a3a3a;
-    line-height: 1.8;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Noto Serif KR', serif;
+  background-color: #faf9f7;
+  color: #3a3a3a;
+  line-height: 1.8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* 뷰어 열릴 때 body 고정 — JS에서 top 값으로 점프 방지 */
 body.no-scroll {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    /* ★ JS에서 style.top = -scrollY 로 설정해 페이지 점프 방지 */
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
 }
 
-img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-}
-
-button {
-    cursor: pointer;
-    font-family: inherit;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
+img    { display: block; max-width: 100%; height: auto; }
+button { cursor: pointer; font-family: inherit; }
+a      { color: inherit; text-decoration: none; }
 
 /* ═══════════════════════════════════════════
-   Curtain Intro
-   ★ 수정: 기본적으로 display:none, JS에서 useCurtain=true일 때만 보여줌
+   커튼 인트로 — 기본 hidden, useCurtain=true 일 때만 표시
    ═══════════════════════════════════════════ */
 .curtain-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    display: none; /* ← 기본값 none으로 변경 */
-    pointer-events: none;
+  position: fixed; inset: 0;
+  z-index: 9999;
+  display: none;          /* 기본값 none */
+  pointer-events: none;
 }
-
-/* JS에서 useCurtain=true일 때 이 클래스를 추가해서 보여줌 */
-.curtain-overlay.curtain-active {
-    display: flex;
-}
+.curtain-overlay.curtain-active { display: flex; }
 
 .curtain {
-    width: 50%;
-    height: 100%;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.9) 0px,
-            rgba(245, 245, 245, 0.85) 15px,
-            rgba(255, 255, 255, 0.9) 30px,
-            rgba(240, 240, 240, 0.85) 45px,
-            rgba(255, 255, 255, 0.9) 60px
-        );
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    position: relative;
+  width: 50%; height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,.9) 0px,  rgba(245,245,245,.85) 15px,
+    rgba(255,255,255,.9) 30px, rgba(240,240,240,.85) 45px,
+    rgba(255,255,255,.9) 60px
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
 }
-
 .curtain::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 28px,
-            rgba(200, 200, 200, 0.12) 29px,
-            rgba(200, 200, 200, 0.12) 31px,
-            transparent 32px,
-            transparent 60px
-        );
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px, transparent 28px,
+    rgba(200,200,200,.12) 29px, rgba(200,200,200,.12) 31px,
+    transparent 32px, transparent 60px
+  );
 }
-
-.curtain-left {
-    box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.05);
-}
-
-.curtain-right {
-    box-shadow: inset 10px 0 20px rgba(0, 0, 0, 0.05);
-}
-
-/* 커튼 애니메이션은 curtain-active일 때만 적용 */
-.curtain-overlay.curtain-active .curtain-left {
-    animation: curtainLeft 1.8s ease-in-out 0.8s forwards;
-}
-
-.curtain-overlay.curtain-active .curtain-right {
-    animation: curtainRight 1.8s ease-in-out 0.8s forwards;
-}
-
-@keyframes curtainLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-}
-
-@keyframes curtainRight {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(100%); }
-}
-
-.curtain-overlay.hidden {
-    display: none;
-}
+.curtain-left  { box-shadow: inset -10px 0 20px rgba(0,0,0,.05); }
+.curtain-right { box-shadow: inset  10px 0 20px rgba(0,0,0,.05); }
+.curtain-overlay.curtain-active .curtain-left  { animation: curtainLeft  1.8s ease-in-out 0.8s forwards; }
+.curtain-overlay.curtain-active .curtain-right { animation: curtainRight 1.8s ease-in-out 0.8s forwards; }
+@keyframes curtainLeft  { to { transform: translateX(-100%); } }
+@keyframes curtainRight { to { transform: translateX( 100%); } }
+.curtain-overlay.hidden { display: none; }
 
 /* ═══════════════════════════════════════════
    Toast
    ═══════════════════════════════════════════ */
 .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: rgba(0, 0, 0, 0.88);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 100px;
-    font-size: 12px;
-    z-index: 10000;
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    pointer-events: none;
-    white-space: nowrap;
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(0,0,0,.88); color: #fff;
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 12px; z-index: 10000;
+  opacity: 0; pointer-events: none; white-space: nowrap;
+  transition: opacity .3s, transform .3s;
 }
-
-.toast.is-visible {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
+.toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ═══════════════════════════════════════════
-   Main Container
+   Layout
    ═══════════════════════════════════════════ */
-.main-container {
-    width: 100%;
-    max-width: 100vw;
-}
+.main-container { width: 100%; max-width: 100vw; }
 
-/* ─── Section Base ─── */
 .section {
-    min-height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+  width: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
 }
 
 /* ═══════════════════════════════════════════
-   Hero Section
+   Hero
    ═══════════════════════════════════════════ */
-.section-hero {
-    position: relative;
-    padding: 0;
-    background-color: #f5f3f0;
-}
+.section-hero { position: relative; padding: 0; background-color: #f5f3f0; }
 
 .hero-image-container {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    max-height: 600px;
-    overflow: hidden;
+  width: 100%;
+  aspect-ratio: 3/4;
+  max-height: 600px;
+  overflow: hidden;
 }
-
 .hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    animation: heroZoomIn 2s ease-out forwards;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  animation: heroZoom 2s ease-out forwards;
+}
+@keyframes heroZoom {
+  from { opacity: 0; transform: scale(1.1); }
+  to   { opacity: 1; transform: scale(1);   }
 }
 
-@keyframes heroZoomIn {
-    0% {
-        opacity: 0;
-        transform: scale(1.1);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.hero-text {
-    padding: 40px 20px;
-    text-align: center;
-}
+.hero-text { padding: 40px 20px; text-align: center; }
 
 .wedding-date {
-    font-size: 14px;
-    letter-spacing: 2px;
-    color: #888;
-    margin-bottom: 15px;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 0.5s forwards;
+  font-size: 14px; letter-spacing: 2px; color: #888; margin-bottom: 15px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .8s ease-out .5s forwards;
 }
-
 .couple-names {
-    font-size: 28px;
-    font-weight: 400;
-    letter-spacing: 4px;
-    margin-bottom: 15px;
-    color: #2c2c2c;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 0.8s forwards;
+  font-size: 28px; font-weight: 400; letter-spacing: 4px;
+  margin-bottom: 15px; color: #2c2c2c;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .8s ease-out .8s forwards;
 }
-
 .venue {
-    font-size: 14px;
-    color: #666;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 1.1s forwards;
+  font-size: 14px; color: #666;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .8s ease-out 1.1s forwards;
 }
-
 .parents-info {
-    margin: 15px 0;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease-out 1s forwards;
+  margin: 15px 0;
+  opacity: 0; animation: fadeUp .8s ease-out 1s forwards;
 }
+.parent-line  { font-size: 14px; color: #555; margin: 5px 0; line-height: 1.6; }
+.parent-names { color: #777; }
+.parent-names.deceased::before { content: "故 "; font-size: .75em; opacity: .6; }
+.child-name   { font-weight: 500; color: #2c2c2c; }
 
-.parent-line {
-    font-size: 14px;
-    color: #555;
-    margin: 5px 0;
-    line-height: 1.6;
-}
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-.parent-names {
-    color: #777;
-}
-
-.parent-names.deceased::before {
-    content: "故 ";
-    font-size: 0.75em;
-    opacity: 0.6;
-}
-
-.child-name {
-    font-weight: 500;
-    color: #2c2c2c;
-}
-
-/* ─── Countdown ─── */
+/* 카운트다운 */
 .countdown-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 25px;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease-out 1.2s forwards;
+  display: flex; justify-content: center; align-items: center;
+  gap: 8px; margin-top: 25px;
+  opacity: 0; animation: fadeUp .8s ease-out 1.2s forwards;
 }
+.countdown-item    { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+.countdown-number  { font-size: 28px; font-weight: 400; color: #2c2c2c; letter-spacing: 1px; line-height: 1.2; }
+.countdown-label   { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: 1px; }
+.countdown-separator { font-size: 24px; color: #ccc; font-weight: 300; margin-bottom: 18px; }
 
-.countdown-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 50px;
-}
-
-.countdown-number {
-    font-size: 28px;
-    font-weight: 400;
-    color: #2c2c2c;
-    letter-spacing: 1px;
-    line-height: 1.2;
-}
-
-.countdown-label {
-    font-size: 11px;
-    color: #999;
-    margin-top: 4px;
-    letter-spacing: 1px;
-}
-
-.countdown-separator {
-    font-size: 24px;
-    color: #ccc;
-    font-weight: 300;
-    margin-bottom: 18px;
-}
-
+/* 캘린더 버튼 */
 .calendar-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-    opacity: 0;
-    animation: fadeInUp 0.8s ease-out 1.5s forwards;
+  display: flex; gap: 10px; justify-content: center; margin-top: 20px;
+  opacity: 0; animation: fadeUp .8s ease-out 1.5s forwards;
 }
-
 .calendar-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 12px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 16px; border-radius: 20px;
+  font-family: 'Noto Serif KR', serif; font-size: 12px;
+  cursor: pointer; transition: all .2s ease;
+  border: 1px solid rgba(255,255,255,.3);
 }
+.google-cal { background: rgba(255,255,255,.9); color: #555; }
+.google-cal:hover { background: #fff; }
+.apple-cal  { background: rgba(0,0,0,.6); color: #fff; }
+.apple-cal:hover  { background: rgba(0,0,0,.8); }
 
-.google-cal {
-    background-color: rgba(255,255,255,0.9);
-    color: #555;
-}
-
-.google-cal:hover {
-    background-color: #fff;
-}
-
-.apple-cal {
-    background-color: rgba(0,0,0,0.6);
-    color: #fff;
-}
-
-.apple-cal:hover {
-    background-color: rgba(0,0,0,0.8);
-}
-
-.scroll-indicator {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
+/* 스크롤 인디케이터 */
+.scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); }
 .scroll-indicator span {
-    display: block;
-    width: 20px;
-    height: 20px;
-    border-right: 2px solid #aaa;
-    border-bottom: 2px solid #aaa;
-    transform: rotate(45deg);
-    animation: scroll-down 1.5s infinite;
+  display: block; width: 20px; height: 20px;
+  border-right: 2px solid #aaa; border-bottom: 2px solid #aaa;
+  transform: rotate(45deg);
+  animation: scrollDown 1.5s infinite;
 }
-
-@keyframes scroll-down {
-    0% {
-        opacity: 0;
-        transform: rotate(45deg) translate(-5px, -5px);
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        transform: rotate(45deg) translate(5px, 5px);
-    }
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes scrollDown {
+  0%   { opacity: 0; transform: rotate(45deg) translate(-5px,-5px); }
+  50%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(45deg) translate(5px,5px);  }
 }
 
 /* ═══════════════════════════════════════════
-   Story Section
+   달력 UI
    ═══════════════════════════════════════════ */
-.section-story {
-    background-color: #fff;
-}
+.wedding-calendar { margin: 20px auto 10px; max-width: 320px; }
+.cal-header { text-align: center; font-size: .95rem; letter-spacing: .1em; color: #8b7355; margin-bottom: 10px; }
+.cal-grid   { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; text-align: center; }
+.cal-day-name { font-size: .72rem; color: #aaa; padding: 4px 0; }
+.cal-cell   { font-size: .8rem; padding: 6px 2px; color: #555; }
+.cal-cell.empty { background: none; }
+.cal-cell.wedding-day { background: #8b7355; color: #fff; border-radius: 50%; font-weight: 500; }
+.cal-heart  { display: block; font-size: .55rem; margin-top: 1px; color: #fff; }
 
-.story-photos {
-    width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
+/* ═══════════════════════════════════════════
+   스토리
+   ═══════════════════════════════════════════ */
+.section-story { background: #fff; }
+.story-photos  { width: 100%; max-width: 500px; display: flex; flex-direction: column; }
 .story-image-container {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 40px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%; max-width: 500px;
+  margin-bottom: 40px; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,.1); cursor: pointer;
 }
-
-.story-image-container img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.story-text {
-    text-align: center;
-    max-width: 400px;
-    margin-bottom: 30px;
-}
-
-.story-text h2 {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 25px;
-    color: #2c2c2c;
-}
-
-.story-text p {
-    font-size: 15px;
-    color: #555;
-    line-height: 2;
-    white-space: pre-line;
-}
+.story-image-container img { width: 100%; height: auto; display: block; }
+.story-text { text-align: center; max-width: 400px; margin-bottom: 30px; }
+.story-text h2 { font-size: 22px; font-weight: 400; margin-bottom: 25px; color: #2c2c2c; }
+.story-text p  { font-size: 15px; color: #555; line-height: 2; white-space: pre-line; }
 
 /* ═══════════════════════════════════════════
-   Gallery Section
+   갤러리
    ═══════════════════════════════════════════ */
-.section-gallery {
-    background-color: #f8f7f5;
-    padding: 60px 20px;
-}
-
-.gallery-title {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 10px;
-    color: #2c2c2c;
-}
-
-.gallery-subtitle {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 40px;
-}
-
+.section-gallery { background: #f8f7f5; padding: 60px 20px; }
+.gallery-title    { font-size: 22px; font-weight: 400; margin-bottom: 10px; color: #2c2c2c; }
+.gallery-subtitle { font-size: 13px; color: #888; margin-bottom: 40px; }
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    width: 100%;
-    max-width: 600px;
+  display: grid; grid-template-columns: repeat(2,1fr);
+  gap: 10px; width: 100%; max-width: 600px;
 }
-
 .gallery-item {
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1; overflow: hidden; border-radius: 4px; cursor: pointer;
+  transition: transform .3s, box-shadow .3s;
 }
-
-.gallery-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.gallery-item:hover img {
-    transform: scale(1.05);
-}
+.gallery-item:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,0,0,.15); }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.gallery-item:hover img { transform: scale(1.05); }
 
 /* ═══════════════════════════════════════════
-   Photo Viewer Modal
+   사진 뷰어
    ═══════════════════════════════════════════ */
 .photo-viewer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.65);
-    z-index: 9000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.92);
+  z-index: 9000;
+  display: none; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .3s;
 }
-
-.photo-viewer.active {
-    display: flex;
-    opacity: 1;
-}
+.photo-viewer.active { display: flex; opacity: 1; }
 
 .viewer-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 50px 0px;
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 0; position: relative; overflow: hidden;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
 }
-
-.viewer-content img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    transition: transform 0.28s ease, opacity 0.28s ease;
-    will-change: transform, opacity;
-}
-
 #viewerImage {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%; height: 100%; object-fit: contain;
+  transition: transform .28s ease, opacity .28s ease;
+  will-change: transform, opacity;
 }
-
 .viewer-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 40px; height: 40px;
+  border: 3px solid rgba(255,255,255,.2);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin .8s linear infinite;
 }
-
-@keyframes spin {
-    to {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-.viewer-loading.hidden {
-    display: none;
-}
+@keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+.viewer-loading.hidden { display: none; }
 
 .viewer-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 40px;
-    cursor: pointer;
-    z-index: 9001;
-    padding: 10px;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+  position: absolute; top: 20px; right: 20px;
+  background: none; border: none; color: #fff;
+  font-size: 40px; cursor: pointer; z-index: 9001;
+  padding: 10px; line-height: 1; opacity: .7; transition: opacity .2s;
 }
-
-.viewer-close:hover {
-    opacity: 1;
-}
+.viewer-close:hover { opacity: 1; }
 
 .viewer-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 30px;
-    cursor: pointer;
-    padding: 20px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-    z-index: 9001;
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #fff;
+  font-size: 30px; cursor: pointer; padding: 20px;
+  opacity: .7; transition: opacity .2s; z-index: 9001;
 }
-
-.viewer-nav:hover {
-    opacity: 1;
-}
-
-.viewer-prev {
-    left: 10px;
-}
-
-.viewer-next {
-    right: 10px;
-}
+.viewer-nav:hover { opacity: 1; }
+.viewer-prev { left: 10px; }
+.viewer-next { right: 10px; }
 
 .viewer-counter {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    font-size: 14px;
-    opacity: 0.7;
+  position: absolute; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  color: #fff; font-size: 14px; opacity: .7;
 }
 
 /* ═══════════════════════════════════════════
-   Location Section
+   슬라이더
    ═══════════════════════════════════════════ */
-.section-location {
-    background-color: #fff;
-    padding: 60px 20px;
-    min-height: auto !important;
-    height: auto;
-    justify-content: flex-start;
-}
-
-.location-title {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 30px;
-    color: #2c2c2c;
-    text-align: center;
-}
-
-.location-info {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.location-name {
-    font-size: 18px;
-    font-weight: 500;
-    color: #2c2c2c;
-    margin-bottom: 10px;
-}
-
-.location-address {
-    font-size: 14px;
-    color: #666;
-}
-
-.location-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-
-.copy-btn, .map-btn {
-    padding: 10px 20px;
-    background-color: #f5f0eb;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 13px;
-    color: #555;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    text-decoration: none;
-}
-
-.copy-btn:hover, .map-btn:hover {
-    background-color: #ebe5df;
-}
-
-.copy-btn:active, .map-btn:active {
-    transform: scale(0.98);
-}
-
-.kakao-btn {
-    background-color: #fee500;
-    border-color: #fee500;
-    color: #3c1e1e;
-}
-
-.kakao-btn:hover {
-    background-color: #fdd800;
-}
-
-.naver-btn {
-    background-color: #03c75a;
-    border-color: #03c75a;
-    color: #fff;
-}
-
-.naver-btn:hover {
-    background-color: #02b350;
-}
-
-.location-map-container {
-    width: 80%;
-    max-width: 300px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.location-map {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* ═══════════════════════════════════════════
-   Account Section
-   ═══════════════════════════════════════════ */
-.section-account {
-    background-color: #f8f7f5;
-    padding: 35px 20px;
-    min-height: auto !important;
-    height: auto;
-    justify-content: flex-start;
-}
-
-.account-title {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 10px;
-    color: #2c2c2c;
-    text-align: center;
-}
-
-.account-subtitle {
-    font-size: 14px;
-    color: #888;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.account-accordions {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.account-accordion {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-}
-
-.accordion-header {
-    width: 100%;
-    padding: 18px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: 'Noto Serif KR', serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: #2c2c2c;
-    transition: background-color 0.2s;
-}
-
-.accordion-header:hover {
-    background-color: #f9f9f9;
-}
-
-.accordion-icon {
-    font-size: 20px;
-    font-weight: 300;
-    color: #999;
-    transition: transform 0.3s;
-}
-
-.account-accordion.active .accordion-icon {
-    transform: rotate(45deg);
-}
-
-.accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
-
-.account-accordion.active .accordion-content {
-    max-height: 500px;
-}
-
-.account-item {
-    padding: 15px 20px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.account-role {
-    font-size: 13px;
-    color: #999;
-    min-width: 40px;
-}
-
-.account-info {
-    font-size: 14px;
-    color: #555;
-    flex: 1;
-    letter-spacing: 0.3px;
-}
-
-.account-item .copy-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-    flex-shrink: 0;
-}
-
-/* ═══════════════════════════════════════════
-   Footer
-   ═══════════════════════════════════════════ */
-.footer {
-    padding: 30px 20px;
-    text-align: center;
-    background-color: #faf9f7;
-    border-top: 1px solid #eee;
-}
-
-.footer-text {
-    font-size: 12px;
-    color: #aaa;
-    letter-spacing: 1px;
-}
-
-/* ═══════════════════════════════════════════
-   Petal Animation
-   ═══════════════════════════════════════════ */
-.petals-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 100;
-    overflow: hidden;
-}
-
-.petal {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(ellipse at 30% 30%, #ffffff 0%, #f5f5f5 40%, #e8e8e8 100%);
-    border-radius: 150% 0 150% 0;
-    opacity: 0;
-    box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.5);
-    animation: falling-petal linear forwards;
-}
-
-@keyframes falling-petal {
-    0% {
-        opacity: 0;
-        transform: translateY(-5vh) translateX(0) rotate(0deg) scale(0.8);
-    }
-    10% {
-        opacity: 0.9;
-    }
-    25% {
-        transform: translateY(25vh) translateX(15px) rotate(90deg) scale(1);
-    }
-    50% {
-        transform: translateY(50vh) translateX(-10px) rotate(180deg) scale(0.9);
-    }
-    75% {
-        transform: translateY(75vh) translateX(20px) rotate(270deg) scale(0.85);
-    }
-    90% {
-        opacity: 0.7;
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(105vh) translateX(5px) rotate(360deg) scale(0.7);
-    }
-}
-
-/* ═══════════════════════════════════════════
-   Scroll Animations
-   ═══════════════════════════════════════════ */
-.fade-in {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.fade-in-left {
-    opacity: 0;
-    transform: translateX(-40px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.fade-in-left.visible {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.fade-in-right {
-    opacity: 0;
-    transform: translateX(40px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.fade-in-right.visible {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.scale-in {
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.scale-in.visible {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* Staggered animation for gallery items */
-.gallery-item.scale-in {
-    transition-delay: calc(var(--delay) * 0.1s);
-}
-
-/* ═══════════════════════════════════════════
-   Loading Placeholder
-   ═══════════════════════════════════════════ */
-.loading-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 40px 0;
-}
-
-.loading-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ccc;
-    animation: loadingPulse 1.2s ease-in-out infinite;
-}
-
-.loading-dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.loading-dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes loadingPulse {
-    0%, 80%, 100% {
-        opacity: 0.3;
-        transform: scale(0.8);
-    }
-    40% {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-}
-
-/* ═══════════════════════════════════════════
-   Responsive - Tablet (768px+)
-   ═══════════════════════════════════════════ */
-@media screen and (min-width: 768px) {
-    .section {
-        padding: 60px 40px;
-    }
-
-    .hero-image-container {
-        max-height: 700px;
-    }
-
-    .couple-names {
-        font-size: 36px;
-    }
-
-    .wedding-date,
-    .venue {
-        font-size: 16px;
-    }
-
-    .story-text h2 {
-        font-size: 26px;
-    }
-
-    .story-text p {
-        font-size: 16px;
-    }
-
-    .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-    }
-
-    .gallery-title {
-        font-size: 26px;
-    }
-
-    .countdown-container {
-        gap: 12px;
-    }
-
-    .countdown-item {
-        min-width: 65px;
-    }
-
-    .countdown-number {
-        font-size: 36px;
-    }
-
-    .countdown-label {
-        font-size: 12px;
-    }
-
-    .countdown-separator {
-        font-size: 28px;
-    }
-
-    .account-title {
-        font-size: 26px;
-    }
-
-    .account-accordions {
-        flex-direction: row;
-        max-width: 700px;
-        gap: 20px;
-    }
-
-    .account-accordion {
-        flex: 1;
-    }
-
-    .location-title {
-        font-size: 26px;
-    }
-
-    .location-name {
-        font-size: 20px;
-    }
-
-    .location-address {
-        font-size: 16px;
-    }
-
-    .location-map-container {
-        width: 100%;
-        max-width: 500px;
-    }
-}
-
-/* ═══════════════════════════════════════════
-   Responsive - Desktop (1024px+)
-   ═══════════════════════════════════════════ */
-@media screen and (min-width: 1024px) {
-    .section {
-        min-height: 100vh;
-    }
-
-    .section-hero {
-        flex-direction: row;
-    }
-
-    .hero-image-container {
-        width: 60%;
-        aspect-ratio: auto;
-        max-height: none;
-        height: 100vh;
-    }
-
-    .hero-text {
-        width: 40%;
-        padding: 60px;
-    }
-
-    .scroll-indicator {
-        display: none;
-    }
-
-    .story-image-container {
-        max-width: 600px;
-    }
-
-    .gallery-grid {
-        max-width: 800px;
-        gap: 20px;
-    }
-}
-
-/* ─── Touch Device Optimizations ─── */
-@media (hover: none) {
-    .gallery-item:hover {
-        transform: none;
-    }
-
-    .gallery-item:hover img {
-        transform: none;
-    }
-
-    .gallery-item:active {
-        transform: scale(0.98);
-    }
-}
-
-/* ─── Safe Area for notched devices ─── */
-@supports (padding: max(0px)) {
-    .section-hero {
-        padding-top: max(0px, env(safe-area-inset-top));
-    }
-
-    .photo-viewer {
-        padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-    }
-}
-
-/* ─── Print ─── */
-@media print {
-    .curtain-overlay,
-    .petals-container,
-    .photo-viewer,
-    .toast,
-    .countdown-container,
-    .calendar-buttons,
-    .location-buttons,
-    .account-item .copy-btn {
-        display: none !important;
-    }
-
-    .fade-in, .fade-in-left, .fade-in-right, .scale-in {
-        opacity: 1 !important;
-        transform: none !important;
-    }
-}
-
-/* ── Wedding Calendar ── */
-.wedding-calendar {
-  margin: 20px auto 10px;
-  max-width: 320px;
-  font-family: 'Noto Serif KR', serif;
-}
-.cal-header {
-  text-align: center;
-  font-size: 0.95rem;
-  letter-spacing: 0.1em;
-  color: #8b7355;
-  margin-bottom: 10px;
-}
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
-}
-.cal-day-name {
-  font-size: 0.72rem;
-  color: #aaa;
-  padding: 4px 0;
-}
-.cal-cell {
-  font-size: 0.8rem;
-  padding: 6px 2px;
-  color: #555;
-  position: relative;
-}
-.cal-cell.empty { background: none; }
-.cal-cell.wedding-day {
-  background: #8b7355;
-  color: #fff;
-  border-radius: 50%;
-  font-weight: 500;
-}
-.cal-heart {
-  display: block;
-  font-size: 0.55rem;
-  margin-top: 1px;
-  color: #fff;
-}
-
-/* ── Transport Tabs ── */
-.transport-section {
-  margin: 24px 0 16px;
-}
-.transport-tabs {
-  display: flex;
-  border-bottom: 1px solid #e0d8cc;
-  margin-bottom: 12px;
-}
-.transport-tab {
-  flex: 1;
-  background: none;
-  border: none;
-  padding: 10px 0;
-  font-size: 0.85rem;
-  color: #aaa;
-  cursor: pointer;
-  font-family: 'Noto Serif KR', serif;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-.transport-tab.active {
-  color: #8b7355;
-  border-bottom: 2px solid #8b7355;
-}
-.transport-panel {
-  display: none;
-  font-size: 0.85rem;
-  color: #666;
-  line-height: 1.8;
-  padding: 4px 0;
-  text-align: center;
-}
-.transport-panel.active {
-  display: block;
-}
-
-/* ── Slider ── */
-.section-slider {
-  background-color: #fff;
-  padding: 60px 0;
-}
-
-.slider-wrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-
-.slider-track-container {
-  width: 100%;
-  overflow: hidden;
-  padding: 10px 0;
-}
-
+.section-slider { background: #fff; padding: 60px 0; }
+.slider-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+.slider-track-container { width: 100%; overflow: hidden; padding: 10px 0; }
 .slider-track {
-  display: flex;
-  gap: 12px;
-  transition: transform 0.4s ease;
-  padding: 0 20px;
+  display: flex; gap: 12px; padding: 0 20px;
+  transition: transform .4s ease; will-change: transform;
 }
-
 .slider-item {
-  flex-shrink: 0;
-  width: 70vw;
-  max-width: 280px;
-  aspect-ratio: 3/4;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  flex-shrink: 0; width: 70vw; max-width: 280px;
+  aspect-ratio: 3/4; border-radius: 8px; overflow: hidden;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.1);
+  transition: transform .2s;
 }
-
-.slider-item:active {
-  transform: scale(0.97);
-}
-
-.slider-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+.slider-item:active { transform: scale(.97); }
+.slider-item img { width: 100%; height: 100%; object-fit: cover; }
 .slider-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+  background: rgba(255,255,255,.85); border: none; border-radius: 50%;
+  width: 36px; height: 36px; font-size: 14px; color: #555;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .2s;
 }
-
 .slider-prev { left: 8px; }
 .slider-next { right: 8px; }
+
+/* ═══════════════════════════════════════════
+   교통 탭
+   ═══════════════════════════════════════════ */
+.transport-section { margin: 24px 0 16px; width: 100%; max-width: 500px; }
+.transport-tabs { display: flex; border-bottom: 1px solid #e0d8cc; margin-bottom: 12px; }
+.transport-tab {
+  flex: 1; background: none; border: none; padding: 10px 0;
+  font-size: .85rem; color: #aaa; cursor: pointer;
+  font-family: 'Noto Serif KR', serif;
+  border-bottom: 2px solid transparent; transition: all .2s;
+}
+.transport-tab.active { color: #8b7355; border-bottom: 2px solid #8b7355; }
+.transport-panel { display: none; font-size: .85rem; color: #666; line-height: 1.8; padding: 4px 0; text-align: center; }
+.transport-panel.active { display: block; }
+
+/* ═══════════════════════════════════════════
+   오시는 길
+   ═══════════════════════════════════════════ */
+.section-location {
+  background: #fff; padding: 60px 20px;
+  min-height: auto !important; justify-content: flex-start;
+}
+.location-title   { font-size: 22px; font-weight: 400; margin-bottom: 30px; color: #2c2c2c; text-align: center; }
+.location-info    { text-align: center; margin-bottom: 10px; }
+.location-name    { font-size: 18px; font-weight: 500; color: #2c2c2c; margin-bottom: 10px; }
+.location-address { font-size: 14px; color: #666; }
+.location-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+
+.copy-btn, .map-btn {
+  padding: 10px 20px;
+  background: #f5f0eb; border: 1px solid #ddd; border-radius: 20px;
+  font-family: 'Noto Serif KR', serif; font-size: 13px; color: #555;
+  cursor: pointer; transition: background .2s; text-decoration: none;
+}
+.copy-btn:hover, .map-btn:hover { background: #ebe5df; }
+.copy-btn:active, .map-btn:active { transform: scale(.98); }
+.kakao-btn { background: #fee500; border-color: #fee500; color: #3c1e1e; }
+.kakao-btn:hover { background: #fdd800; }
+.naver-btn { background: #03c75a; border-color: #03c75a; color: #fff; }
+.naver-btn:hover { background: #02b350; }
+
+/* 카카오맵 컨테이너 */
+.location-map-container {
+  width: 100%; max-width: 500px;
+  margin: 20px auto 0; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0,0,0,.1);
+}
+.location-map-container iframe { display: block; width: 100%; height: 300px; border: 0; }
+.location-map { width: 100%; height: auto; display: block; }
+
+/* ═══════════════════════════════════════════
+   축의금
+   ═══════════════════════════════════════════ */
+.section-account {
+  background: #f8f7f5; padding: 35px 20px;
+  min-height: auto !important; justify-content: flex-start;
+}
+.account-title    { font-size: 22px; font-weight: 400; margin-bottom: 10px; color: #2c2c2c; text-align: center; }
+.account-subtitle { font-size: 14px; color: #888; text-align: center; margin-bottom: 30px; }
+.account-accordions { display: flex; flex-direction: column; gap: 15px; max-width: 400px; margin: 0 auto; width: 100%; }
+.account-accordion {
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05); overflow: hidden;
+}
+.accordion-header {
+  width: 100%; padding: 18px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 500; color: #2c2c2c;
+  transition: background .2s;
+}
+.accordion-header:hover { background: #f9f9f9; }
+.accordion-icon { font-size: 20px; font-weight: 300; color: #999; transition: transform .3s; }
+.account-accordion.active .accordion-icon { transform: rotate(45deg); }
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height .3s ease-out; }
+.account-accordion.active .accordion-content { max-height: 500px; }
+.account-item { padding: 15px 20px; border-top: 1px solid #f0f0f0; display: flex; align-items: center; gap: 12px; }
+.account-role { font-size: 13px; color: #999; min-width: 40px; }
+.account-info { font-size: 14px; color: #555; flex: 1; letter-spacing: .3px; }
+.account-item .copy-btn { padding: 6px 12px; font-size: 12px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════
+   푸터
+   ═══════════════════════════════════════════ */
+.footer { padding: 30px 20px; text-align: center; background: #faf9f7; border-top: 1px solid #eee; }
+.footer-text { font-size: 12px; color: #aaa; letter-spacing: 1px; }
+
+/* ═══════════════════════════════════════════
+   꽃잎
+   ═══════════════════════════════════════════ */
+.petals-container { position: fixed; inset: 0; pointer-events: none; z-index: 100; overflow: hidden; }
+.petal {
+  position: absolute; width: 12px; height: 12px;
+  background: radial-gradient(ellipse at 30% 30%, #fff 0%, #f5f5f5 40%, #e8e8e8 100%);
+  border-radius: 150% 0 150% 0; opacity: 0;
+  animation: petalFall linear forwards;
+}
+@keyframes petalFall {
+  0%   { opacity: 0;   transform: translateY(-5vh)  translateX(0)    rotate(0deg)   scale(.8); }
+  10%  { opacity: .9; }
+  25%  {               transform: translateY(25vh)  translateX(15px) rotate(90deg)  scale(1); }
+  50%  {               transform: translateY(50vh)  translateX(-10px)rotate(180deg) scale(.9); }
+  75%  {               transform: translateY(75vh)  translateX(20px) rotate(270deg) scale(.85); }
+  90%  { opacity: .7; }
+  100% { opacity: 0;   transform: translateY(105vh) translateX(5px)  rotate(360deg) scale(.7); }
+}
+
+/* ═══════════════════════════════════════════
+   스크롤 애니메이션
+   ═══════════════════════════════════════════ */
+.fade-in       { opacity: 0; transform: translateY(40px);  transition: opacity .8s ease-out, transform .8s ease-out; }
+.fade-in-left  { opacity: 0; transform: translateX(-40px); transition: opacity .8s ease-out, transform .8s ease-out; }
+.fade-in-right { opacity: 0; transform: translateX( 40px); transition: opacity .8s ease-out, transform .8s ease-out; }
+.scale-in      { opacity: 0; transform: scale(.8);         transition: opacity .6s ease-out, transform .6s ease-out; }
+.fade-in.visible, .fade-in-left.visible, .fade-in-right.visible { opacity: 1; transform: translate(0,0); }
+.scale-in.visible { opacity: 1; transform: scale(1); }
+.gallery-item.scale-in { transition-delay: calc(var(--delay) * 0.1s); }
+
+/* ═══════════════════════════════════════════
+   로딩
+   ═══════════════════════════════════════════ */
+.loading-placeholder { display: flex; align-items: center; justify-content: center; gap: .5rem; padding: 40px 0; }
+.loading-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #ccc;
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: .2s; }
+.loading-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes dotPulse {
+  0%,80%,100% { opacity: .3; transform: scale(.8); }
+  40%         { opacity: 1;  transform: scale(1.2); }
+}
+
+/* ═══════════════════════════════════════════
+   반응형
+   ═══════════════════════════════════════════ */
+@media (min-width: 768px) {
+  .section { padding: 60px 40px; }
+  .hero-image-container { max-height: 700px; }
+  .couple-names { font-size: 36px; }
+  .wedding-date, .venue { font-size: 16px; }
+  .story-text h2 { font-size: 26px; }
+  .story-text p  { font-size: 16px; }
+  .gallery-grid  { grid-template-columns: repeat(3,1fr); gap: 15px; }
+  .gallery-title { font-size: 26px; }
+  .countdown-container  { gap: 12px; }
+  .countdown-item       { min-width: 65px; }
+  .countdown-number     { font-size: 36px; }
+  .countdown-separator  { font-size: 28px; }
+  .account-accordions   { flex-direction: row; max-width: 700px; gap: 20px; }
+  .account-accordion    { flex: 1; }
+  .location-title       { font-size: 26px; }
+  .location-name        { font-size: 20px; }
+  .location-address     { font-size: 16px; }
+}
+
+@media (min-width: 1024px) {
+  .section { min-height: 100vh; }
+  .section-hero { flex-direction: row; }
+  .hero-image-container { width: 60%; aspect-ratio: auto; max-height: none; height: 100vh; }
+  .hero-text { width: 40%; padding: 60px; }
+  .scroll-indicator { display: none; }
+  .gallery-grid { max-width: 800px; gap: 20px; }
+}
+
+@media (hover: none) {
+  .gallery-item:hover { transform: none; }
+  .gallery-item:hover img { transform: none; }
+  .gallery-item:active { transform: scale(.98); }
+}
+
+@supports (padding: max(0px)) {
+  .section-hero { padding-top: max(0px, env(safe-area-inset-top)); }
+}
+
+@media print {
+  .curtain-overlay, .petals-container, .photo-viewer,
+  .toast, .countdown-container, .calendar-buttons,
+  .location-buttons, .account-item .copy-btn { display: none !important; }
+  .fade-in, .fade-in-left, .fade-in-right, .scale-in { opacity: 1 !important; transform: none !important; }
+}
